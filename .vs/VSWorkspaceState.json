@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Source",
+    "\\Source\\Lab03-16",
+    "\\Source\\Lab03-16\\Lab03-16"
   ],
-  "SelectedNode": "\\Lab03-16.sln",
+  "SelectedNode": "\\Source\\Lab03-16\\Lab03-16\\sort.cpp",
   "PreviewInSolutionExplorer": false
 }
