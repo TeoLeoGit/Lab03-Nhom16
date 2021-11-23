@@ -1,5 +1,4 @@
-#include"dataGenerator.h"
-#include"sort.h"
+#include "inputHandler.h"
 using namespace std;
 
 void runtest()
@@ -129,8 +128,17 @@ void runtest()
 	}
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-	runtest();
-	return 0;
+	//runtest();
+
+	
+	runCommand(argc, argv);
+
+	//test
+	/*char alg[] = "heap-sort"; 
+	long size = 500;
+	char out[] = "-both";
+	execCommand3(alg, size, out);*/
+
 }
