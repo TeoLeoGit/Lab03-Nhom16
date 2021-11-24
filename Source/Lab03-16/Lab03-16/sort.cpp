@@ -194,7 +194,8 @@ void mergeSort(int* a, int left, int right, long long& count_comp)
 
 int partition(int* a, int low, int high, long long& count_comp)
 {
-	int pivot = a[high];
+	//median pivot
+	int pivot = a[(low + high) / 2];
 	int i = low - 1;
 	for (int j = low; ++count_comp && j <= high - 1; j++)
 	{

@@ -42,6 +42,15 @@ void runtest()
 			for (int i = 0; i < n; i++)
 				b[i] = a[i];
 			begin = clock();
+			insertionSort(b, n, count_comp);
+			timeUsed = ((double)clock() - begin);
+			cout << "\nInsertion sort: " << timeUsed << "ms" << endl;
+			cout << "Comparisons: " << count_comp << endl;
+
+			count_comp = 0;
+			for (int i = 0; i < n; i++)
+				b[i] = a[i];
+			begin = clock();
 			bubbleSort(b, n, count_comp);
 			timeUsed = ((double)clock() - begin);
 			cout << "\nBubble sort: " << timeUsed << "ms" << endl;
@@ -130,10 +139,10 @@ void runtest()
 
 int main(int argc, char* argv[])
 {
-	//runtest();
+	runtest();
 
 	
-	runCommand(argc, argv);
+	//runCommand(argc, argv);
 
 	//test
 	/*char alg[] = "heap-sort"; 

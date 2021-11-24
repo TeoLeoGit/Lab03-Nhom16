@@ -12,7 +12,7 @@ void HoanVi(T& a, T& b)
 	a = b;
 	b = x;
 }
-//comeent
+
 //-------------------------------------------------
 
 // Hàm phát sinh mảng dữ liệu ngẫu nhiên
