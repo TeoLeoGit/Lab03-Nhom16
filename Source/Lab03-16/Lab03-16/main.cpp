@@ -139,10 +139,8 @@ void runtest()
 
 int main(int argc, char* argv[])
 {
-	runtest();
-
-	
-	//runCommand(argc, argv);
+	//runtest();
+	runCommand(argc, argv);
 
 	//test
 	/*char alg[] = "heap-sort"; 

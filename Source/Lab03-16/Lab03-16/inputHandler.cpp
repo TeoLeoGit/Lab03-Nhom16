@@ -2,23 +2,16 @@
 
 
 void runCommand(int argc, char* argv[]) {
-
-	if (argc > 1) {
-		if (argc > 4 && argc < 7) {
-
-			if (strcmp(argv[1], "-a") == 0) {
-				//cout << "ALGORITHM MODE" << endl;
-			}
-			else if (strcmp(argv[1], "-c") == 0)
-				cout << "Compare mode";		
-			//if argv[4] is a number --> command 2 or 3.
+	if (argc > 4 && argc < 7) {
+		if (strcmp(argv[1], "-a") == 0) {
+			//if argv[3] is a number --> command 2 or 3.
 			long dataSize = strtol(argv[3], &argv[3], 10);
 
-			if (dataSize > 0) {		
+			if (dataSize > 0) {
 				//Case: command 3
 				if (argc == 5) {
 					execCommand3(argv[2], dataSize, argv[4]);
-				} 
+				}
 				//Command 2
 				else {
 					execCommand2(argv[2], dataSize, argv[4], argv[5]);
@@ -26,17 +19,86 @@ void runCommand(int argc, char* argv[]) {
 			}
 			//Command 1
 			else {
-				cout << "input file: " << argv[3] << endl;
-				
+				execCommand1(argv[2], argv[3], argv[4]);
 			}
-
 		}
-		else {
-			cout << "Cannot find prototype for your command." << endl;
-		}	
+		else if (strcmp(argv[1], "-c") == 0) {
+			// if argv[4] is a number-- > command 5.
+			long dataSize = strtol(argv[4], &argv[4], 10);
+			if (dataSize > 0) {
+				//Case: command 5
+				execCommand5(argv[2], argv[3], dataSize, argv[5]);
+			}
+			//Command 4
+			else {
+				execCommand4(argv[2], argv[3], argv[4]);
+			}	
+		}
+	}
+	else {
+		cout << "Cannot find prototype for your command." << endl;
 	}
 }
 
+//Command 1
+void execCommand1(char* algorithm, char* inputFile, char* outParameter) {
+	ifstream inFile(inputFile);
+
+	if (inFile.is_open()) {
+		string firstLine;
+		getline(inFile, firstLine);
+
+		int dataSize = stoi(firstLine);
+		int* data = new int[dataSize];
+
+		for (int i = 0; i < dataSize; i++) {
+			inFile >> data[i];
+		}
+		inFile.close();
+
+		//output set
+		int doPrintTime = 0;
+		int doPrintComp = 0;
+		if (strcmp(outParameter, "-time") == 0) {
+			doPrintTime++;
+		}
+		else if (strcmp(outParameter, "-comp") == 0) {
+			doPrintComp++;
+		}
+		else if (strcmp(outParameter, "-both") == 0) {
+			doPrintComp++;
+			doPrintTime++;
+		}
+
+		//Printing arguments
+		cout << "ALGORITHM MODE" << endl;
+		cout << "Algorithm: " << algorithm << endl;
+		cout << "Input size: " << dataSize << endl;
+		cout << "--------------------------------------" << endl;
+
+		//sort the array
+		long long count_comp = 0;
+		double timeUsed = 0;
+		sortingData(algorithm, data, dataSize, count_comp, timeUsed);
+		if (doPrintTime)
+			cout << "Running time: " << timeUsed << "ms" << endl;
+		if (doPrintComp)
+			cout << "Comparisons: " << count_comp << endl;
+
+		//writing sorted array to input.txt
+		ofstream sortedInputFile;
+		sortedInputFile.open("output.txt");
+		sortedInputFile << dataSize << "\n";
+		for (int i = 0; i < dataSize; i++)
+			sortedInputFile << data[i] << " ";
+		sortedInputFile.close();
+	}
+	else {
+		cout << "Error opening file!" << endl;
+	}
+}
+
+//command 2
 void execCommand2(char* algorithm, long size, char* order, char* outParameter) {
 	if (size < 0 || size > 500000) {
 		cout << "Invalid size" << endl;
@@ -83,7 +145,7 @@ void execCommand2(char* algorithm, long size, char* order, char* outParameter) {
 	cout << "Input order: " << order << endl;
 	cout << "--------------------------------------" << endl;
 
-	//Writing generated data to output.txt
+	//Writing generated data to input.txt
 	ofstream outFile;
 	outFile.open("input.txt");
 	outFile << size << "\n";
@@ -93,107 +155,14 @@ void execCommand2(char* algorithm, long size, char* order, char* outParameter) {
 
 	//sort the array
 	long long count_comp = 0;
-	if (strcmp(algorithm, "selection-sort") == 0) {
-		auto begin = clock();
-		selectionSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
+	double timeUsed = 0;
+	sortingData(algorithm, data, size, count_comp, timeUsed);
+	if (doPrintTime)
 			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "binary-insertion-sort") == 0) {
-		auto begin = clock();
-		insertionSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "bubble-sort") == 0) {
-		auto begin = clock();
-		bubbleSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "shaker-sort") == 0) {
-		auto begin = clock();
-		shakerSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "shell-sort") == 0) {
-		auto begin = clock();
-		shellSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "heap-sort") == 0) {
-		auto begin = clock();
-		heapSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "merge-sort") == 0) {
-		auto begin = clock();
-		mergeSort(data, 0, size - 1, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "quick-sort") == 0) {
-		auto begin = clock();
-		quickSort(data, 0, size - 1, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "counting-sort") == 0) {
-		auto begin = clock();
-		countingSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "radix-sort") == 0) {
-		auto begin = clock();
-		radixSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
-	else if (strcmp(algorithm, "flash-sort") == 0) {
-		auto begin = clock();
-		flashSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
-		if (doPrintTime)
-			cout << "Running time: " << timeUsed << "ms" << endl;
-		if (doPrintComp)
-			cout << "Comparisons: " << count_comp << endl;
-	}
+	if (doPrintComp)
+		cout << "Comparisons: " << count_comp << endl;
 
-	//writing sorted array to input.txt
+	//writing sorted array to output.txt
 	ofstream sortedInputFile;
 	sortedInputFile.open("output.txt");
 	sortedInputFile << size << "\n";
@@ -210,7 +179,6 @@ void execCommand3(char* algorithm, long size, char* outParameter) {
 		return;
 	}
 
-
 	// generate data
 	int** data = new int* [4];
 	for (int i = 0; i < 4; ++i) {
@@ -218,7 +186,6 @@ void execCommand3(char* algorithm, long size, char* outParameter) {
 		GenerateData(data[i], size, i);
 	}
 
-	
 	//output set
 	int doPrintTime = 0;
 	int doPrintComp = 0;
@@ -260,7 +227,7 @@ void execCommand3(char* algorithm, long size, char* outParameter) {
 			outputFile3 << data[i][j] << " ";
 			outputFile4 << data[i][j] << " ";
 			outputFile2 << data[i][j] << " ";
-	}
+		}
 	outputFile1.close();
 	outputFile2.close();
 	outputFile3.close();
@@ -288,107 +255,182 @@ void execCommand3(char* algorithm, long size, char* outParameter) {
 			break;
 		};
 
+		//sorting data
 		long long count_comp = 0;
-		if (strcmp(algorithm, "selection-sort") == 0) {
-			auto begin = clock();
-			selectionSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "binary-insertion-sort") == 0) {
-			auto begin = clock();
-			insertionSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "bubble-sort") == 0) {
-			auto begin = clock();
-			bubbleSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "shaker-sort") == 0) {
-			auto begin = clock();
-			shakerSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "shell-sort") == 0) {
-			auto begin = clock();
-			shellSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "heap-sort") == 0) {
-			auto begin = clock();
-			heapSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "merge-sort") == 0) {
-			auto begin = clock();
-			mergeSort(data[i], 0, size - 1, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "quick-sort") == 0) {
-			auto begin = clock();
-			quickSort(data[i], 0, size - 1, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "counting-sort") == 0) {
-			auto begin = clock();
-			countingSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "radix-sort") == 0) {
-			auto begin = clock();
-			radixSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
-		else if (strcmp(algorithm, "flash-sort") == 0) {
-			auto begin = clock();
-			flashSort(data[i], size, count_comp);
-			double timeUsed = ((double)clock() - begin);
-			if (doPrintTime)
-				cout << "Running time: " << timeUsed << "ms" << endl;
-			if (doPrintComp)
-				cout << "Comparisons: " << count_comp << endl;
-		}
+		double timeUsed = 0;
+		sortingData(algorithm, data[i], size, count_comp, timeUsed);
+		if (doPrintTime)
+			cout << "Running time: " << timeUsed << "ms" << endl;
+		if (doPrintComp)
+			cout << "Comparisons: " << count_comp << endl;
 	}
-
 }
 
+//Command 4
+void execCommand4(char* algorithm1, char* algorithm2, char* inputFile) {
+	ifstream inFile(inputFile);
+
+	if (inFile.is_open()) {
+		string firstLine;
+		getline(inFile, firstLine);
+
+		int dataSize = stoi(firstLine);
+		int* data1 = new int[dataSize];
+		int* data2 = new int[dataSize];
+
+		for (int i = 0; i < dataSize; i++) {
+			inFile >> data1[i];
+			data2[i] = data1[i];
+		}
+		inFile.close();
+
+
+		//Printing arguments
+		cout << "COMPARE MODE" << endl;
+		cout << "Algorithm: " << algorithm1 << " | " << algorithm2 << endl;
+		cout << "Input size: " << dataSize << endl;
+		cout << "--------------------------------------" << endl;
+
+		//sort the array
+		long long count_comp1 = 0;
+		long long count_comp2 = 0;
+		double timeUsed1 = 0;
+		double timeUsed2 = 0;
+		sortingData(algorithm1, data1, dataSize, count_comp1, timeUsed1);
+		sortingData(algorithm2, data2, dataSize, count_comp2, timeUsed2);
+		cout << "Running time: " << timeUsed1 << "ms" << " | " << timeUsed2 << "ms" << endl;
+		cout << "Comparisons: " << count_comp1 << " | " << count_comp2 << endl;
+	}
+	else {
+		cout << "Error opening file!" << endl;
+	}
+}
+
+//Command 5
+void execCommand5(char* algorithm1, char* algorithm2, long size, char* order) {
+	if (size < 0 || size > 500000) {
+		cout << "Invalid size" << endl;
+		return;
+	}
+	int* data1 = new int[size];
+	int* data2 = new int[size];
+
+	//generate data
+	if (strcmp(order, "-rand") == 0) {
+		GenerateData(data1, size, 0);
+		for (int i = 0; i < size; i++)
+			data2[i] = data1[i];
+	}
+	else if (strcmp(order, "-nsorted") == 0) {
+		GenerateData(data1, size, 3);
+		for (int i = 0; i < size; i++)
+			data2[i] = data1[i];
+	}
+	else if (strcmp(order, "-sorted") == 0) {
+		GenerateData(data1, size, 1);
+		for (int i = 0; i < size; i++)
+			data2[i] = data1[i];
+	}
+	else if (strcmp(order, "-rev") == 0) {
+		GenerateData(data1, size, 2);
+		for (int i = 0; i < size; i++)
+			data2[i] = data1[i];
+	}
+	else {
+		cout << "Invalid data order!" << endl;
+		return;
+	}
+
+	//Printing arguments
+	cout << "COMPARE MODE" << endl;
+	cout << "Algorithm: " << algorithm1 << " | " << algorithm2 << endl;
+	cout << "Input size: " << size << endl;
+	cout << "--------------------------------------" << endl;
+
+	//Writing generated data to input.txt
+	ofstream outFile;
+	outFile.open("input.txt");
+	outFile << size << "\n";
+	for (int i = 0; i < size; i++)
+		outFile << data1[i] << " ";
+	outFile.close();
+
+	//sort the array
+	long long count_comp1 = 0;
+	long long count_comp2 = 0;
+	double timeUsed1 = 0;
+	double timeUsed2 = 0;
+	sortingData(algorithm1, data1, size, count_comp1, timeUsed1);
+	sortingData(algorithm2, data2, size, count_comp2, timeUsed2);
+	cout << "Running time: " << timeUsed1 << "ms" << " | " << timeUsed2 << "ms" << endl;
+	cout << "Comparisons: " << count_comp1 << " | " << count_comp2 << endl;
+
+}
+void sortingData(char* algorithm, int* data, long size, long long& count_comp, double& timeUsed) {
+	if (strcmp(algorithm, "selection-sort") == 0) {
+		auto begin = clock();
+		selectionSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+		
+	}
+	else if (strcmp(algorithm, "binary-insertion-sort") == 0) {
+		auto begin = clock();
+		insertionSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+	else if (strcmp(algorithm, "bubble-sort") == 0) {
+		auto begin = clock();
+		bubbleSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+	else if (strcmp(algorithm, "shaker-sort") == 0) {
+		auto begin = clock();
+		shakerSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+	
+	}
+	else if (strcmp(algorithm, "shell-sort") == 0) {
+		auto begin = clock();
+		shellSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+	else if (strcmp(algorithm, "heap-sort") == 0) {
+		auto begin = clock();
+		heapSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+	else if (strcmp(algorithm, "merge-sort") == 0) {
+		auto begin = clock();
+		mergeSort(data, 0, size - 1, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+	else if (strcmp(algorithm, "quick-sort") == 0) {
+		auto begin = clock();
+		quickSort(data, 0, size - 1, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+	else if (strcmp(algorithm, "counting-sort") == 0) {
+		auto begin = clock();
+		countingSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+	else if (strcmp(algorithm, "radix-sort") == 0) {
+		auto begin = clock();
+		radixSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+	else if (strcmp(algorithm, "flash-sort") == 0) {
+		auto begin = clock();
+		flashSort(data, size, count_comp);
+		double timeUsed = ((double)clock() - begin);
+
+	}
+}
