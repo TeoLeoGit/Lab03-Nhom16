@@ -370,67 +370,67 @@ void sortingData(char* algorithm, int* data, long size, long long& count_comp, d
 	if (strcmp(algorithm, "selection-sort") == 0) {
 		auto begin = clock();
 		selectionSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 		
 	}
 	else if (strcmp(algorithm, "binary-insertion-sort") == 0) {
 		auto begin = clock();
 		insertionSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 	else if (strcmp(algorithm, "bubble-sort") == 0) {
 		auto begin = clock();
 		bubbleSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 	else if (strcmp(algorithm, "shaker-sort") == 0) {
 		auto begin = clock();
 		shakerSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 	
 	}
 	else if (strcmp(algorithm, "shell-sort") == 0) {
 		auto begin = clock();
 		shellSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 	else if (strcmp(algorithm, "heap-sort") == 0) {
 		auto begin = clock();
 		heapSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 	else if (strcmp(algorithm, "merge-sort") == 0) {
 		auto begin = clock();
 		mergeSort(data, 0, size - 1, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 	else if (strcmp(algorithm, "quick-sort") == 0) {
 		auto begin = clock();
 		quickSort(data, 0, size - 1, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 	else if (strcmp(algorithm, "counting-sort") == 0) {
 		auto begin = clock();
 		countingSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 	else if (strcmp(algorithm, "radix-sort") == 0) {
 		auto begin = clock();
 		radixSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 	else if (strcmp(algorithm, "flash-sort") == 0) {
 		auto begin = clock();
 		flashSort(data, size, count_comp);
-		double timeUsed = ((double)clock() - begin);
+		timeUsed = ((double)clock() - begin);
 
 	}
 }
