@@ -136,18 +136,33 @@ void runtest()
 		dataOrder++;
 	}
 }
+void runtest2()
+{
+	long long count_comp = 0;
+	int n = 500000;
+	int* a = new int[n];
+	int* b = new int[n];
+	GenerateData(a, n, 2);
+	cout << "---------- " << n << " elements ----------" << endl;
+	for (int i = 0; i < n; i++)
+		b[i] = a[i];
+	auto begin = clock();
+	selectionSort(b, n, count_comp);
+	double timeUsed = ((double)clock() - begin);
+	cout << "Selection sort: " << timeUsed << "ms" << endl;
+	cout << "Comparisons: " << count_comp << endl;
+
+}
 
 int main(int argc, char* argv[])
 {
-	runtest();
-
+	//runtest2();
+	runCommand(argc, argv);
 	
-	//runCommand(argc, argv);
-
 	//test
 	/*char alg[] = "heap-sort"; 
 	long size = 500;
 	char out[] = "-both";
 	execCommand3(alg, size, out);*/
-
+	return 0;
 }
